@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: bharatkatha
+    runtime: docker
+    plan: starter
+    healthCheckPath: /api/health
+    envVars:
+      - key: JWT_SECRET
+        generateValue: true
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GEMINI_MODEL
+        value: gemini-2.5-flash
+    disk:
+      name: bharatkatha-data
+      mountPath: /app/server/data
+      sizeGB: 1
