@@ -28,6 +28,23 @@ export function generateWithGemini(prompt, responseJsonSchema) {
   return apiFetch("/api/ai/generate", { method: "POST", body: JSON.stringify({ prompt, responseJsonSchema }) }).then((response) => response.result);
 }
 
+export async function fetchNarrationAudio(text, voiceId) {
+  const token = getBackendToken();
+  const headers = { "Content-Type": "application/json" };
+  if (token) headers["Authorization"] = `Bearer ${token}`;
+  const response = await fetch(`${API_URL}/api/ai/narrate`, {
+    method: "POST",
+    headers,
+    body: JSON.stringify({ text, voiceId })
+  });
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({}));
+    throw new Error(err.error || "Failed to generate narration audio");
+  }
+  const blob = await response.blob();
+  return URL.createObjectURL(blob);
+}
+
 export function connectCommunityRealtime(onEvent) {
   const socket = io(API_URL, { auth: { token: getBackendToken() } });
   socket.on("community:post", onEvent);

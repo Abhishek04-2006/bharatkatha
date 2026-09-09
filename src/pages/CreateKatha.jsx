@@ -6,6 +6,7 @@ import ReactQuill from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
 import { KATHA_THEMES, KATHA_SETTINGS, KATHA_TYPES } from "@/data/heritage";
 import AIDisclaimer from "@/components/AIDisclaimer";
+import StoryNarrator from "@/components/StoryNarrator";
 import { addPoints } from "@/lib/gamification";
 import { createKatha, trackEvent } from "@/lib/backend";
 import { generateWithGemini } from "@/api/backendClient";
@@ -182,6 +183,12 @@ Guidelines:
               {story}
             </article>
           )}
+
+          {/* Story Audio Narration */}
+          <div className="mt-8 rounded-2xl border border-amber-500/30 bg-card/80 p-5 backdrop-blur-sm">
+            <div className="text-xs uppercase tracking-widest text-amber-400 font-semibold mb-2">Listen to Your Story</div>
+            <StoryNarrator text={parsedKatha?.story || story} />
+          </div>
 
           <div className="mt-6 flex flex-wrap gap-3">
             <button onClick={save} disabled={saved} className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-amber-400 to-orange-600 px-6 py-3 text-sm font-semibold text-background disabled:opacity-60">

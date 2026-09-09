@@ -27,6 +27,8 @@ const db = new Database(path.join(dataDir, "bharatkatha.db"));
 const jwtSecret = process.env.JWT_SECRET || "bharatkatha-local-development-secret";
 const geminiKey = process.env.GEMINI_API_KEY;
 const geminiModel = process.env.GEMINI_MODEL || "gemini-2.5-flash";
+const elevenLabsKey = process.env.ELEVENLABS_API_KEY;
+const elevenLabsVoiceId = process.env.ELEVENLABS_VOICE_ID || "JBFqnCBsd6RMkjVDRZzb";
 const port = Number(process.env.PORT || 8787);
 
 db.pragma("journal_mode = WAL");
@@ -81,6 +83,46 @@ app.post("/api/ai/generate", optionalAuth, async (req, res) => {
     }
     res.json({ result });
   } catch (error) { res.status(502).json({ error: error.message || "Could not reach Gemini" }); }
+});
+app.post("/api/ai/narrate", optionalAuth, async (req, res) => {
+  if (!elevenLabsKey) return res.status(503).json({ error: "ElevenLabs is not configured. Set ELEVENLABS_API_KEY on the server." });
+  const { text, voiceId } = req.body;
+  if (!text || typeof text !== "string") return res.status(400).json({ error: "Text is required for narration" });
+  
+  const targetVoiceId = voiceId || elevenLabsVoiceId;
+  try {
+    const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${targetVoiceId}`, {
+      method: "POST",
+      headers: {
+        "xi-api-key": elevenLabsKey,
+        "Content-Type": "application/json",
+        "Accept": "audio/mpeg"
+      },
+      body: JSON.stringify({
+        text: text.slice(0, 5000),
+        model_id: "eleven_multilingual_v2",
+        voice_settings: {
+          stability: 0.5,
+          similarity_boost: 0.75
+        }
+      })
+    });
+
+    if (!response.ok) {
+      const errData = await response.json().catch(() => ({}));
+      const msg = errData?.detail?.message || errData?.message || `ElevenLabs request failed with status ${response.status}`;
+      return res.status(response.status).json({ error: msg });
+    }
+
+    const audioBuffer = await response.arrayBuffer();
+    res.set({
+      "Content-Type": "audio/mpeg",
+      "Content-Length": audioBuffer.byteLength
+    });
+    res.send(Buffer.from(audioBuffer));
+  } catch (error) {
+    res.status(502).json({ error: error.message || "Could not generate speech narration" });
+  }
 });
 app.post("/api/auth/register", async (req, res) => {
   const { email, password, name } = req.body;

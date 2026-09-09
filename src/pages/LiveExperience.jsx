@@ -4,6 +4,7 @@ import { ArrowLeft, Play, Orbit } from "lucide-react";
 import ImmersiveCanvas from "@/components/live/ImmersiveCanvas";
 import TouchJoystick from "@/components/live/TouchJoystick";
 import AIDisclaimer from "@/components/AIDisclaimer";
+import StoryNarrator from "@/components/StoryNarrator";
 import { addPoints } from "@/lib/gamification";
 
 // Split the generated story into walkable panels (~1 panel per story beat)
@@ -73,15 +74,18 @@ export default function LiveExperience() {
             <ImmersiveCanvas ref={canvasRef} theme={katha.setting} paragraphs={panels} />
 
             {/* HUD */}
-            <div className="pointer-events-none absolute top-0 inset-x-0 p-4 flex items-center justify-between">
+            <div className="pointer-events-none absolute top-0 inset-x-0 p-4 flex items-center justify-between z-20">
                 <Link
                     to="/create"
                     className="pointer-events-auto inline-flex items-center gap-1.5 rounded-full glass px-4 py-2 text-sm text-foreground hover:border-primary/50 transition-colors"
                 >
                     <ArrowLeft className="h-4 w-4" /> Back
                 </Link>
-                <div className="glass rounded-full px-4 py-2 text-xs text-amber-200 hidden sm:block">
-                    3D Live Experience · {katha.theme} in {katha.setting}
+                <div className="pointer-events-auto flex items-center gap-3">
+                    <StoryNarrator text={katha.story} variant="compact" />
+                    <div className="glass rounded-full px-4 py-2 text-xs text-amber-200 hidden sm:block">
+                        3D Live Experience · {katha.theme} in {katha.setting}
+                    </div>
                 </div>
             </div>
 

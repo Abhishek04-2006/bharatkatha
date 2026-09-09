@@ -1,4 +1,6 @@
-import { apiFetch, connectCommunityRealtime } from "@/api/backendClient";
+import { apiFetch, connectCommunityRealtime, fetchNarrationAudio } from "@/api/backendClient";
+
+export { fetchNarrationAudio };
 
 export async function createKatha(katha) {
   return (await apiFetch("/api/kathas", { method: "POST", body: JSON.stringify(katha) }));
