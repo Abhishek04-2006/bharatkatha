@@ -6,9 +6,8 @@ import { getPoints, getRank } from "@/lib/gamification";
 const NAV = [
   { label: "Home", path: "/" },
   { label: "Explore India", path: "/explore" },
-  { label: "Experience", path: "/experience" },
+  { label: "AI Characters", path: "/characters" },
   { label: "Create Katha", path: "/create" },
-  { label: "Media Library", path: "/media-library" },
   { label: "My Roots", path: "/roots" },
   { label: "Community", path: "/community" },
   { label: "Profile", path: "/profile" },

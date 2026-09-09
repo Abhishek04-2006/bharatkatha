@@ -5,7 +5,6 @@ import { MapPin, Clock, ArrowLeft, Play, BookOpen, Lightbulb, Link2, ChevronRigh
 import { Image } from "@/components/ui/image";
 import { HERITAGE, STATES, CATEGORIES, ERAS, getHeritage } from "@/data/heritage";
 import HeritageCard from "@/components/HeritageCard";
-import SearchFilter from "@/components/SearchFilter";
 import { addPoints } from "@/lib/gamification";
 import { searchContent, filterContent } from "@/lib/contentManagement";
 
@@ -146,16 +145,35 @@ export default function ExploreIndia() {
       {/* Collection */}
       <section className="py-14 border-t border-border">
         <div className="max-w-7xl mx-auto px-5 lg:px-8">
-          {/* Search and Filter */}
-          <div className="mb-10">
-            <SearchFilter
-              onSearch={setSearchQuery}
-              onFilter={setAdvancedFilters}
-              states={STATES.map(s => s.name)}
-              eras={ERAS.map(e => e.name)}
-              categories={CATEGORIES.map(c => c.name)}
-              showFavorites={true}
-            />
+          <div className="mb-10 rounded-2xl border border-border bg-card p-4">
+            <div className="flex flex-col md:flex-row gap-3">
+              <input
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search heritage, cities, or traditions..."
+                className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none ring-0 placeholder:text-muted-foreground focus:border-primary"
+              />
+              <select
+                value={advancedFilters.category}
+                onChange={(e) => setAdvancedFilters((prev) => ({ ...prev, category: e.target.value }))}
+                className="rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none focus:border-primary"
+              >
+                <option value="">All categories</option>
+                {CATEGORIES.map((c) => (
+                  <option key={c.id} value={c.id}>{c.name}</option>
+                ))}
+              </select>
+              <select
+                value={advancedFilters.era}
+                onChange={(e) => setAdvancedFilters((prev) => ({ ...prev, era: e.target.value }))}
+                className="rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none focus:border-primary"
+              >
+                <option value="">All eras</option>
+                {ERAS.map((e) => (
+                  <option key={e.id} value={e.id}>{e.name}</option>
+                ))}
+              </select>
+            </div>
           </div>
 
           <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
